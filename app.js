@@ -1,5 +1,5 @@
 //jshint esversion:6
-
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const ejs = require("ejs");
@@ -23,7 +23,7 @@ app.get("/register", (req,res)=>{
     res.render( "register");
 })
 
-mongoose.connect("mongodb+srv://vatsuvaksi:password321@cluster0.hmhkw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",{useNewUrlParser :true , useUnifiedTopology : true})
+mongoose.connect(`mongodb+srv://vatsuvaksi:${process.env.password}@cluster0.hmhkw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,{useNewUrlParser :true , useUnifiedTopology : true})
 .then(() =>{console.log("DB Connected")})
 .catch((err) =>{console.log(err.message)});
 
@@ -32,8 +32,8 @@ const userSchema = new mongoose.Schema({
     password :String
 });
 
-const secret = "ThisIsOurLittleSecret";
-userSchema.plugin(encrypt,{secret:secret , encryptedFields: ["password"]});
+
+userSchema.plugin(encrypt,{secret:process.env.secret , encryptedFields: ["password"]});
 
 const User = new mongoose.model("User" , userSchema);
 app.post("/register", (req,res)=>{
