@@ -26,9 +26,45 @@ mongoose.connect("mongodb+srv://vatsuvaksi:password321@cluster0.hmhkw.mongodb.ne
 .then(() =>{console.log("DB Connected")})
 .catch((err) =>{console.log(err.message)});
 
+const userSchema = {
+    email :String,
+    password :String
+};
+const User = new mongoose.model("User" , userSchema);
+app.post("/register", (req,res)=>{
+    const newUser = new User({
+        email : req.body.username,
+        password:req.body.password
+    })
+    newUser.save((err)=>{
+        if(err){
+            console.log(err);
+        }else{
+            res.render("secrets");
+        }
+    })
+});
+app.post("/login",(req,res)=>{
+    const newUser = new User({
+        email : req.body.username,
+        password:req.body.password
+    })
+    User.findOne({email : newUser.email}, (err, foundUser)=>{
+        if(err){
+            console.timeLog(err);
+        }else{
+            if(foundUser){
+                if(foundUser.password === newUser.password){
+                    res.render("secrets");
+                }else{
+                    
+                }
+            }else{
 
-
-
+            }
+        }
+    })
+});
 app.listen(3000, ()=>{
     console.log("Listening on 3000");
 });
